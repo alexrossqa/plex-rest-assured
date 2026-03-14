@@ -10,6 +10,7 @@ public class BaseTest {
     protected static String token;
     protected static String baseUrl;
     protected static String env;
+    protected static long lastRun;
 
     @BeforeClass
     public void setup() throws Exception {
@@ -21,6 +22,7 @@ public class BaseTest {
         env = System.getProperty("env", "ad");
         baseUrl = config.getProperty("plex." + env + ".baseUrl");
         token = config.getProperty("plex." + env + ".token");
+        lastRun = Long.parseLong(System.getProperty("lastRun", config.getProperty("lastRun")));
 
         RestAssured.baseURI = baseUrl;
     }
