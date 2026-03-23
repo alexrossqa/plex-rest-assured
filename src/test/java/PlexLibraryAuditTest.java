@@ -8,7 +8,7 @@ import static io.restassured.RestAssured.given;
 
 public class PlexLibraryAuditTest extends BaseTest {
 
-    @Test
+    @Test (groups = {"audit"})
     public void testFindUnmatchedItems() {
         String response = given()
                 .header("X-Plex-Token", token)

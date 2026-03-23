@@ -14,7 +14,7 @@ public class DailySummaryTest extends BaseTest {
     private List<PlexVideo> newAdditions = new ArrayList<>();
     private static final List<String> EXCLUDED_LIBRARIES = Arrays.asList("44", "46");
 
-    @Test
+    @Test(groups = {"daily", "regression"})
     public void testGetNewAdditions() {
         String response = given()
                 .header("X-Plex-Token", token)
@@ -31,7 +31,7 @@ public class DailySummaryTest extends BaseTest {
         assertFalse(newAdditions.isEmpty(), "Expected at least one new addition");
     }
 
-    @Test(dependsOnMethods = "testGetNewAdditions")
+    @Test(dependsOnMethods = "testGetNewAdditions", groups = {"daily", "regression"})
     public void testGetMetadataForNewAdditions() {
         for (PlexVideo video : newAdditions) {
             String response = given()
@@ -53,7 +53,7 @@ public class DailySummaryTest extends BaseTest {
         System.out.println("With TMDB ID: " + withTmdb + "/" + newAdditions.size());
     }
 
-    @Test(dependsOnMethods = "testGetMetadataForNewAdditions")
+    @Test(dependsOnMethods = "testGetMetadataForNewAdditions", groups = {"daily", "regression"})
     public void testValidateTmdbRecords() {
         List<PlexVideo> matched = newAdditions.stream()
                 .filter(v -> v.getTmdbId() != null && v.getImdbId() != null).toList();
