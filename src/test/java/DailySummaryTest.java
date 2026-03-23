@@ -2,16 +2,17 @@ import io.restassured.path.xml.XmlPath;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.testng.Assert.assertFalse;
 
 public class DailySummaryTest extends BaseTest {
 
-    private List<String> ratingKeys = new ArrayList<>();
-    private List<String> tmdbIds = new ArrayList<>();
-    private List<String> imdbIds = new ArrayList<>();
+    private List<PlexVideo> newAdditions = new ArrayList<>();
+    private static final List<String> EXCLUDED_LIBRARIES = Arrays.asList("44", "46");
 
     @Test
     public void testGetNewAdditions() {
@@ -24,59 +25,50 @@ public class DailySummaryTest extends BaseTest {
                 .body(containsString("MediaContainer"))
                 .extract().body().asString();
 
-        XmlPath xmlPath = new XmlPath(response);
-        List<String> allRatingKeys = xmlPath.getList("MediaContainer.Video.@ratingKey");
-        List<String> allAddedAts = xmlPath.getList("MediaContainer.Video.@addedAt");
-        List<String> allLibraryIds = xmlPath.getList("MediaContainer.Video.@librarySectionID");
+        newAdditions = PlexResponseMapper.mapRecentlyAdded(response, lastRun, EXCLUDED_LIBRARIES);
 
-        for (int i = 0; i < allRatingKeys.size(); i++) {
-            long addedAt = Long.parseLong(allAddedAts.get(i));
-            String libraryId = allLibraryIds.get(i);
-
-            // exclude FILMS TEMP (46) and AD TV 2 (44)
-            if (libraryId.equals("46") || libraryId.equals("44")) {
-                continue;
-            }
-
-            // only include items added since last run
-            if (addedAt > lastRun) {
-                ratingKeys.add(allRatingKeys.get(i));
-            }
-        }
-
-        System.out.println("New additions since last run: " + ratingKeys.size());
-        System.out.println("Rating keys: " + ratingKeys);
+        System.out.println("New additions since last run: " + newAdditions.size());
+        assertFalse(newAdditions.isEmpty(), "Expected at least one new addition");
     }
 
     @Test(dependsOnMethods = "testGetNewAdditions")
     public void testGetMetadataForNewAdditions() {
-        for (String ratingKey : ratingKeys) {
+        for (PlexVideo video : newAdditions) {
             String response = given()
                     .header("X-Plex-Token", token)
                     .when()
-                    .get("/library/metadata/" + ratingKey)
+                    .get("/library/metadata/" + video.getRatingKey())
                     .then()
                     .statusCode(200)
                     .extract().body().asString();
 
-            XmlPath xmlPath = new XmlPath(response);
-            List<String> guids = xmlPath.getList("MediaContainer.Video.Guid.@id");
-
-            String tmdbId = null;
-            String imdbId = null;
-
-            for (String guid : guids) {
-                if (guid.startsWith("tmdb://")) tmdbId = guid.replace("tmdb://", "");
-                if (guid.startsWith("imdb://")) imdbId = guid.replace("imdb://", "");
-            }
-
-            if (tmdbId != null) tmdbIds.add(tmdbId);
-            if (imdbId != null) imdbIds.add(imdbId);
-
-            System.out.println("Title ratingKey=" + ratingKey + " TMDB=" + tmdbId + " IMDB=" + imdbId);
+            PlexResponseMapper.mapGuids(video, response);
+            System.out.println(video);
         }
 
-        System.out.println("Total with TMDB ID: " + tmdbIds.size());
-        System.out.println("Total with IMDB ID: " + imdbIds.size());
+        long withImdb = newAdditions.stream().filter(v -> v.getImdbId() != null).count();
+        long withTmdb = newAdditions.stream().filter(v -> v.getTmdbId() != null).count();
+
+        System.out.println("With IMDB ID: " + withImdb + "/" + newAdditions.size());
+        System.out.println("With TMDB ID: " + withTmdb + "/" + newAdditions.size());
+    }
+
+    @Test(dependsOnMethods = "testGetMetadataForNewAdditions")
+    public void testValidateTmdbRecords() {
+        List<PlexVideo> matched = newAdditions.stream()
+                .filter(v -> v.getTmdbId() != null && v.getImdbId() != null).toList();
+
+        System.out.println("Validating " + matched.size() + " matched items against TMDB");
+
+        for (PlexVideo video : matched) {
+            given()
+                    .queryParam("api_key", config.getProperty("tmdb.apiKey"))
+                    .when()
+                    .get(config.getProperty("tmdb.baseUrl") + "/movie/" + video.getTmdbId())
+                    .then()
+                    .statusCode(200)
+                    .body(containsString("imdb_id"))
+                    .body(containsString("poster_path"));
+        }
     }
 }
