@@ -1,0 +1,20 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Plex API Tests">
+
+    <groups>
+        <define name="smoke"/>
+        <define name="regression"/>
+        <define name="daily"/>
+        <define name="audit"/>
+        <define name="sync"/>
+    </groups>
+
+    <test name="All Tests">
+        <classes>
+            <class name="PlexServerTest"/>
+            <class name="DailySummaryTest"/>
+            <class name="PlexLibraryAuditTest"/>
+        </classes>
+    </test>
+
+</suite>
