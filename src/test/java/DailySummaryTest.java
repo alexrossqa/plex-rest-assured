@@ -61,10 +61,11 @@ public class DailySummaryTest extends BaseTest {
         System.out.println("Validating " + matched.size() + " matched items against TMDB");
 
         for (PlexVideo video : matched) {
+            System.out.println(video.getTmdbId());
             given()
-                    .queryParam("api_key", config.getProperty("tmdb.apiKey"))
+                    .queryParam("api_key", tmdbApiKey)
                     .when()
-                    .get(config.getProperty("tmdb.baseUrl") + "/movie/" + video.getTmdbId())
+                    .get(tmdbBaseUrl + "/movie/" + video.getTmdbId())
                     .then()
                     .statusCode(200)
                     .body(containsString("imdb_id"))
