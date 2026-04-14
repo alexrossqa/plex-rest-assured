@@ -19,8 +19,8 @@ public class BaseTest {
         tmdbBaseUrl = System.getProperty("tmdb.baseUrl");
         tmdbApiKey  = System.getProperty("tmdb.apiKey");
 
-        System.out.println("DEBUG token = " + System.getProperty("plex.token"));
-        System.out.println("DEBUG all props = " + System.getProperties());
+        System.out.println("DEBUG plextoken = " + System.getProperty("plextoken"));
+        System.out.println("DEBUG plex.token = " + System.getProperty("plex.token"));
 
         RestAssured.baseURI = baseUrl;
     }
