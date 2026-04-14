@@ -15,10 +15,6 @@ public class BaseTest {
         lastRun     = Long.parseLong(System.getProperty("lastRun"));
         tmdbBaseUrl = System.getProperty("tmdb.baseUrl");
         tmdbApiKey  = System.getProperty("tmdb.apiKey");
-
-        System.out.println("DEBUG static init token = " + token);
-        System.out.println("DEBUG static init baseUrl = " + baseUrl);
-
         RestAssured.baseURI = baseUrl;
     }
 }
