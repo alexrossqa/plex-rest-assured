@@ -16,6 +16,8 @@ public class DailySummaryTest extends BaseTest {
 
     @Test(groups = {"daily", "regression"})
     public void testGetNewAdditions() {
+        System.out.println("DEBUG: token at test time = " + token);
+        System.out.println("DEBUG: baseUrl at test time = " + baseUrl);
         String response = given()
                 .header("X-Plex-Token", token)
                 .when()
