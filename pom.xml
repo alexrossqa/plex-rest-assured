@@ -24,6 +24,14 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <argLine>
+                        -Denv=${env}
+                        -Dplex.baseUrl=${plex.baseUrl}
+                        -Dplex.token=${plex.token}
+                        -DlastRun=${lastRun}
+                        -Dtmdb.baseUrl=${tmdb.baseUrl}
+                        -Dtmdb.apiKey=${tmdb.apiKey}
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>
