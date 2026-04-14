@@ -11,6 +11,7 @@
 
     <test name="All Tests">
         <classes>
+            <class name="BaseTest"/>
             <class name="PlexServerTest"/>
             <class name="DailySummaryTest"/>
             <class name="PlexLibraryAuditTest"/>
