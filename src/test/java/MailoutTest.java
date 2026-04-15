@@ -37,7 +37,8 @@ public class MailoutTest extends BaseTest {
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(username));
+        message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(recipients));
         message.setSubject("Plex — " + additions.size() + " new addition" + (additions.size() == 1 ? "" : "s"));
         message.setContent(buildHtml(additions), "text/html; charset=utf-8");
 
