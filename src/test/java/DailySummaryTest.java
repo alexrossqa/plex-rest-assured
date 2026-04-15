@@ -11,7 +11,7 @@ import static org.testng.Assert.assertFalse;
 
 public class DailySummaryTest extends BaseTest {
 
-    private List<PlexVideo> newAdditions = new ArrayList<>();
+    static List<PlexVideo> newAdditions = new ArrayList<>();
     private static final List<String> EXCLUDED_LIBRARIES = Arrays.asList("44", "46");
 
     @Test(groups = {"daily", "regression"})
