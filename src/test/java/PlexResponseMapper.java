@@ -4,6 +4,8 @@ import java.util.List;
 
 public class PlexResponseMapper {
 
+
+
     public static List<PlexVideo> mapRecentlyAdded(String xmlResponse, long lastRun,
                                                    List<String> excludedLibraryIds) {
         XmlPath xmlPath = new XmlPath(xmlResponse);
@@ -47,7 +49,7 @@ public class PlexResponseMapper {
             if (guid.startsWith("tmdb://")) video.setTmdbId(guid.replace("tmdb://", ""));
             if (guid.startsWith("imdb://")) video.setImdbId(guid.replace("imdb://", ""));
         }
-        video.setRating(xmlPath.getString("MediaContainer.Video.@rating"));
+        video.setRating(xmlPath.getString("MediaContainer.Video.@audienceRating"));
         video.setSummary(xmlPath.getString("MediaContainer.Video.@summary"));
     }
 }

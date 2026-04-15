@@ -7,6 +7,7 @@
         <define name="daily"/>
         <define name="audit"/>
         <define name="sync"/>
+        <define name="MailoutTest"/>
     </groups>
 
     <test name="All Tests">
@@ -15,6 +16,7 @@
             <class name="PlexServerTest"/>
             <class name="DailySummaryTest"/>
             <class name="PlexLibraryAuditTest"/>
+            <class name="MailoutTest"/>
         </classes>
     </test>
 

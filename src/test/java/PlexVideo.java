@@ -11,6 +11,7 @@ public class PlexVideo {
     private String thumb;
     private String rating;
     private String summary;
+    private String posterPath;
 
     // Constructor
     public PlexVideo(String ratingKey, String title, String year, String addedAt,
@@ -36,12 +37,14 @@ public class PlexVideo {
     public String getThumb() { return thumb; }
     public String getRating() { return rating; }
     public String getSummary() { return summary; }
+    public String getPosterPath() { return posterPath; }
 
     // Setters for IDs added later from metadata call
     public void setImdbId(String imdbId) { this.imdbId = imdbId; }
     public void setTmdbId(String tmdbId) { this.tmdbId = tmdbId; }
     public void setRating(String rating) { this.rating = rating; }
     public void setSummary(String summary) { this.summary = summary; }
+    public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
 
     @Override
     public String toString() {

@@ -1,3 +1,4 @@
+import io.restassured.path.json.JsonPath;
 import io.restassured.path.xml.XmlPath;
 import org.testng.annotations.Test;
 
@@ -62,14 +63,20 @@ public class DailySummaryTest extends BaseTest {
 
         for (PlexVideo video : matched) {
             System.out.println(video.getTmdbId());
-            given()
+            String tmdbResponse = given()
                     .queryParam("api_key", tmdbApiKey)
                     .when()
                     .get(tmdbBaseUrl + "/movie/" + video.getTmdbId())
                     .then()
                     .statusCode(200)
                     .body(containsString("imdb_id"))
-                    .body(containsString("poster_path"));
+                    .body(containsString("poster_path"))
+                    .extract().body().asString();
+
+            JsonPath json = new JsonPath(tmdbResponse);
+            String posterPath = json.getString("poster_path");
+            video.setPosterPath(posterPath);
+            System.out.println(video.getTitle() + " poster: " + posterPath);
         }
     }
 }
