@@ -39,7 +39,7 @@ public class PlexResponseMapper {
         return videos;
     }
 
-    public static void mapGuids(PlexVideo video, String xmlResponse) {
+    public static void mapMetadata(PlexVideo video, String xmlResponse) {
         XmlPath xmlPath = new XmlPath(xmlResponse);
         List<String> guids = xmlPath.getList("MediaContainer.Video.Guid.@id");
 
@@ -47,5 +47,7 @@ public class PlexResponseMapper {
             if (guid.startsWith("tmdb://")) video.setTmdbId(guid.replace("tmdb://", ""));
             if (guid.startsWith("imdb://")) video.setImdbId(guid.replace("imdb://", ""));
         }
+        video.setRating(xmlPath.getString("MediaContainer.Video.@rating"));
+        video.setSummary(xmlPath.getString("MediaContainer.Video.@summary"));
     }
 }

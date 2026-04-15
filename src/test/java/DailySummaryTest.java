@@ -42,7 +42,7 @@ public class DailySummaryTest extends BaseTest {
                     .statusCode(200)
                     .extract().body().asString();
 
-            PlexResponseMapper.mapGuids(video, response);
+            PlexResponseMapper.mapMetadata(video, response);
             System.out.println(video);
         }
 
