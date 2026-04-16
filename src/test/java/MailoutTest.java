@@ -49,10 +49,11 @@ public class MailoutTest extends BaseTest {
     private String buildHtml(List<PlexVideo> additions) {
 
         int SUMMARY_LIMIT = 2000;
-        String plexLogoBase64    = fetchBase64Image("plex-logo.jpg");
-        String jenkinsLogoBase64 = fetchBase64Image("jenkins-logo.png");
-        String imdbLogoBase64 = fetchBase64Image("imdb-logo.png");
-        String newWaveLogoBase64 = fetchBase64Image("new-wave-logo.png");
+        String plexLogo    = "https://raw.githubusercontent.com/alexrossqa/plex-rest-assured/main/src/test/resources/plex-logo.jpg";
+        String jenkinsLogo = "https://raw.githubusercontent.com/alexrossqa/plex-rest-assured/main/src/test/resources/jenkins-logo.png";
+        String imdbLogo    = "https://raw.githubusercontent.com/alexrossqa/plex-rest-assured/main/src/test/resources/Imdb-logo.png";
+        String newWaveLogo = "https://raw.githubusercontent.com/alexrossqa/plex-rest-assured/main/src/test/resources/new-wave-logo.png";
+        String noPoster = "https://raw.githubusercontent.com/alexrossqa/plex-rest-assured/main/src/test/resources/no-poster.png";
 
         // Group by library
         Map<String, List<PlexVideo>> byLibrary = new TreeMap<>();
@@ -81,10 +82,10 @@ public class MailoutTest extends BaseTest {
                 .append("<table width='100%' cellpadding='0' cellspacing='0' border='0'>")
                 .append("<tr>")
                 .append("<td valign='middle'>")
-                .append("<img src='").append(plexLogoBase64).append("' alt='Plex' height='120' style='display:block;'/>")
+                .append("<img src='").append(plexLogo).append("' alt='Plex' height='120' style='display:block;'/>")
                 .append("</td>")
                 .append("<td align='right' valign='middle'>")
-                .append("<img src='").append(newWaveLogoBase64).append("' alt='Jenkins' height='70' style='display:block;'/>")
+                .append("<img src='").append(newWaveLogo).append("' alt='Jenkins' height='70' style='display:block;'/>")
                 .append("</td>")
                 .append("</tr>")
                 // Second row - title
@@ -110,15 +111,16 @@ public class MailoutTest extends BaseTest {
 
             // Films
             for (PlexVideo video : films) {
+
                 String posterUrl = video.getPosterPath() != null
                         ? "https://image.tmdb.org/t/p/w200" + video.getPosterPath()
-                        : baseUrl + video.getThumb() + "?X-Plex-Token=" + token;
+                        : noPoster;
 //                String imdbUrl   = video.getImdbId() != null ? "https://www.imdb.com/title/" + video.getImdbId() : null;
                 String letterboxdUrl = video.getImdbId() != null ? "https://letterboxd.com/imdb/" + video.getImdbId() : null;
                 String summary   = video.getSummary() != null ? video.getSummary() : "";
                 if (summary.length() > SUMMARY_LIMIT) summary = summary.substring(0, SUMMARY_LIMIT) + "...";
                 String rating = video.getRating() != null
-                        ? "<img src='" + imdbLogoBase64 + "' height='14' style='display:inline;vertical-align:middle;'/> " + video.getRating()
+                        ? "<img src='" + imdbLogo + "' height='14' style='display:inline;vertical-align:middle;'/> " + video.getRating()
                         : "No rating";
 
                 sb.append("<tr><td style='padding:15px 0;border-bottom:1px solid #2a2a4a;'>")
@@ -158,19 +160,5 @@ public class MailoutTest extends BaseTest {
                 .append("</body></html>");
 
         return sb.toString();
-    }
-
-    private String fetchBase64Image(String filename) {
-        try {
-            byte[] imageBytes = getClass()
-                    .getClassLoader()
-                    .getResourceAsStream(filename)
-                    .readAllBytes();
-            String mimeType = filename.endsWith(".png") ? "image/png" : "image/jpeg";
-            return "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(imageBytes);
-        } catch (Exception e) {
-            System.out.println("Failed to load image: " + filename + " - " + e.getMessage());
-            return "";
-        }
     }
 }
