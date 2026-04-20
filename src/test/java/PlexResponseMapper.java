@@ -25,12 +25,10 @@ public class PlexResponseMapper {
             if (excludedLibraryIds.contains(libraryId)) continue;
             if (addedAt <= lastRun) continue;
 
-            String year = xmlPath.getString(prefix + "@year");
-
             videos.add(new PlexVideo(
                     xmlPath.getString(prefix + "@ratingKey"),
                     xmlPath.getString(prefix + "@title"),
-                    year,
+                    xmlPath.getString(prefix + "@year"),
                     addedAtStr,
                     libraryId,
                     xmlPath.getString(prefix + "@librarySectionTitle"),

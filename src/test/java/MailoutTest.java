@@ -115,10 +115,12 @@ public class MailoutTest extends BaseTest {
                 String posterUrl = video.getPosterPath() != null
                         ? "https://image.tmdb.org/t/p/w200" + video.getPosterPath()
                         : noPoster;
-//                String imdbUrl   = video.getImdbId() != null ? "https://www.imdb.com/title/" + video.getImdbId() : null;
+                String imdbUrl   = video.getImdbId() != null ? "https://www.imdb.com/title/" + video.getImdbId() : null;
                 String letterboxdUrl = video.getImdbId() != null ? "https://letterboxd.com/imdb/" + video.getImdbId() : null;
                 String summary   = video.getSummary() != null ? video.getSummary() : "";
                 if (summary.length() > SUMMARY_LIMIT) summary = summary.substring(0, SUMMARY_LIMIT) + "...";
+
+
                 String rating = video.getRating() != null
                         ? "<img src='" + imdbLogo + "' height='14' style='display:inline;vertical-align:middle;'/> " + video.getRating()
                         : "No rating";
@@ -134,7 +136,12 @@ public class MailoutTest extends BaseTest {
                         .append(video.getTitle()).append(" (").append(video.getYear()).append(")")
                         .append(letterboxdUrl != null ? "</a>" : "")
                         .append("</p>")
-                        .append("<p style='margin:0 0 8px 0;font-size:12px;color:#aaaaaa;'>").append(rating).append("</p>")
+
+                        .append("<p style='margin:0 0 8px 0;font-size:12px;color:#aaaaaa;'>")
+                        .append(imdbUrl != null ? "<a href='" + imdbUrl + "' style='color:#aaaaaa;text-decoration:none;'>" : "")
+                        .append(rating)
+                        .append(imdbUrl != null ? "</a>" : "")
+                        .append("</p>")
                         .append("<p style='margin:0;font-size:13px;color:#cccccc;line-height:1.6;'>").append(summary).append("</p>")
                         .append("</td>")
 
